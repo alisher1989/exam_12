@@ -1,0 +1,137 @@
+[
+{
+  "model": "auth.group",
+  "pk": 1,
+  "fields": {
+    "name": "Moderators",
+    "permissions": [
+      34,
+      35
+    ]
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$IUJocKwLwS8Z$+8/WQ0qpFuIyLmlDhogBeBEfIhhoCWqvFJHZcWptyXk=",
+    "last_login": "2020-03-14T08:10:59.964Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2020-03-14T03:33:31.019Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$PzUpM4mpXuzB$UDmOUR7J3Kv7jxhRHah9FpjcVrgng0Tm80snIHqXMzI=",
+    "last_login": "2020-03-14T08:01:16.781Z",
+    "is_superuser": false,
+    "username": "user",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2020-03-14T05:33:31.345Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "webapp.file",
+  "pk": 2,
+  "fields": {
+    "file": "uploads/troy-dvd-cover-art.jpg",
+    "name": "Bred Pitt",
+    "author": 1,
+    "created_at": "2020-03-14",
+    "file_status": "hidden"
+  }
+},
+{
+  "model": "webapp.file",
+  "pk": 3,
+  "fields": {
+    "file": "uploads/kemeron.jpg",
+    "name": "Kventin",
+    "author": 1,
+    "created_at": "2020-03-14",
+    "file_status": "hidden"
+  }
+},
+{
+  "model": "webapp.file",
+  "pk": 5,
+  "fields": {
+    "file": "uploads/gladiator-dvd-cover-art.jpg",
+    "name": "Gladiator 2",
+    "author": 1,
+    "created_at": "2020-03-14",
+    "file_status": "hidden"
+  }
+},
+{
+  "model": "webapp.file",
+  "pk": 6,
+  "fields": {
+    "file": "uploads/gladiator-dvd-cover-art_TLtusfn.jpg",
+    "name": "Gladiator",
+    "author": 3,
+    "created_at": "2020-03-14",
+    "file_status": "common"
+  }
+},
+{
+  "model": "webapp.file",
+  "pk": 8,
+  "fields": {
+    "file": "uploads/\u0411\u0435\u0437_\u043d\u0430\u0437\u0432\u0430\u043d\u0438\u044f_bcgvIzZ.jpeg",
+    "name": "Shvarcnegger",
+    "author": 3,
+    "created_at": "2020-03-14",
+    "file_status": "common"
+  }
+},
+{
+  "model": "webapp.file",
+  "pk": 9,
+  "fields": {
+    "file": "uploads/kemeron_xCTDSpN.jpg",
+    "name": "Kemeron Dias",
+    "author": 3,
+    "created_at": "2020-03-14",
+    "file_status": "common"
+  }
+},
+{
+  "model": "webapp.file",
+  "pk": 10,
+  "fields": {
+    "file": "uploads/Jackie-Chan.jpg",
+    "name": "Jackie",
+    "author": 1,
+    "created_at": "2020-03-14",
+    "file_status": "common"
+  }
+},
+{
+  "model": "webapp.file",
+  "pk": 12,
+  "fields": {
+    "file": "uploads/troy-dvd-cover-art_dKhnOA1.jpg",
+    "name": "Troy",
+    "author": 1,
+    "created_at": "2020-03-14",
+    "file_status": "hidden"
+  }
+}
+]
