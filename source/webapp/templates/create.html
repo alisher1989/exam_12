@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Add file{% endblock %}
+{% block menu %}
+    <li><a href="{% url 'webapp:index' %}">Home</a></li>
+{% endblock %}
+{% block content %}
+    <h1>Create advertisement</h1>
+    <form method="POST" action="{% url 'webapp:add_file' %}" enctype="multipart/form-data">
+        {% include 'partial/form.html' with button_text="Add" %}
+    </form>
+{% endblock %}

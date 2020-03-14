@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Update file{% endblock %}
+{% block menu %}
+    <li><a href="{% url 'webapp:index' %}">Home</a></li>
+{% endblock %}
+{% block content %}
+    <h1>Update advertisement</h1>
+    <form method="POST" action="{% url "webapp:update_file" file.pk %}" method="post" enctype="multipart/form-data">
+        {% include 'partial/form.html' with button_text="Update" %}
+    </form>
+{% endblock %}

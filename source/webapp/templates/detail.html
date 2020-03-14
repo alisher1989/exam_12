@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+    {{ adver.description }}
+{% endblock %}
+
+{% block menu %}
+{#    <li><a href="{% url 'webapp:update_adver' adver.pk %}">Update</a></li>#}
+{% endblock %}
+
+{% block content %}
+    <h1>File</h1>
+    <p>File: <b><a href="http://localhost:8000/uploads/{{ file.file }}">{{ file.file }}</a></b></p>
+    {% if file.author %}
+    <p>Author: <b><a href="{% url 'accounts:user_detail' file.author.pk %}">{{ file.author }}</a></b></p>
+    {% endif %}
+    <p>Created at: <b>{{ file.created_at }}</b></p>
+    {% if request.user.is_authenticated or  has_perms.file.change_file %}
+    <a href="{% url 'webapp:update_file' file.pk %}" type="button" class="btn btn-success">Update</a>
+    {% endif %}
+    {% if request.user.is_authenticated or has_perms.file.delete_file %}
+    <a href="{% url 'webapp:delete_file' file.pk %}" type="button" class="btn btn-info">Delete</a>
+    {% endif %}
+
+    <div style="margin-top: 30px">
+        <h3>Private Users</h3>
+    </div>
+
+    <div style="margin-top: 30px" id="test_{{ file.pk }}">
+        {% for item in file.private_set.all%}
+            <div id="test_2_{{ item.user.id }}">
+            <p><b><a href="{% url 'accounts:user_detail' item.user.id %}" type="button" class="btn btn-info">{{ item.user }}</a></b>
+            <b><a href="#" type="button" class="btn btn-danger" onclick="DeleteFromPrivate(event,{{ item.user.id }})">X</a></b>
+            </p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 30px" id="private_id_{{ file.pk }}">
+        <input type="text" id="user_name_{{ file.pk }}">
+        <a href="" type="button" class="btn btn-success" onclick="addToPrivate(event, {{ file.pk }})">Add user to private</a>
+    </div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function addToPrivate(event, pk) {
+            event.preventDefault();
+            console.log('start');
+            console.log(pk);
+            let csrftoken = getCookie('csrftoken');
+            let user = $(`#user_name_${pk}`).val();
+            let data = {
+                file_id: pk,
+                user_name: user
+            };
+            $.ajax({
+                url: '/add-to-private/',
+                type: 'post',
+                data: data,
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function (data2) {
+                    console.log('ok');
+                    console.log(data2.status);
+                    console.log(data2.user_id);
+                    {#$(`#user_name_${data2.file_id}`).val('')#}
+                    $(`#test_${pk}`).append(`<p>${data2.status}</p>`);
+                    {#$(`#test_${pk}`).append($(`<p><b><a href="http://localhost:8000/profile/${data2.user_id}/"#}
+                    {#                             type="button" class="btn btn-info">${data2.user}</a></b></p>#}
+                    {#                         `));#}
+                    if (data2.status === 'User already private') {
+                        console.log('error fixed');
+                        stop();
+                        $(`#user_name_${pk}`).val('')
+                    }
+                    else if (data2.user === undefined) {
+                        console.log('error fixed');
+                        stop();
+                    }
+                    else {
+                       $(`#test_${pk}`).append($(`<p id="new_priv_${data2.user_id}"><b><a href="http://localhost:8000/profile/${data2.user_id}/"
+                                                 type="button" class="btn btn-info">${data2.user}</a></b>
+                                                 <b><a href="#" type="button" class="btn btn-danger" onclick="DeleteFromPrivate(event,${data2.user_id})">X</a></b>
+                                                 </p>
+                                             `));
+                    }
+$(`#user_name_${pk}`).val('');
+                }
+            });
+        }
+
+        function DeleteFromPrivate(event, pk) {
+            event.preventDefault();
+            console.log('start', pk);
+            let csrftoken = getCookie('csrftoken');
+            let data = {
+                user_id: pk
+            };
+            $.ajax({
+                url: '/delete-from-private/',
+                type: 'post',
+                data: data,
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function (data2) {
+                    console.log('ok');
+                    $(`#test_2_${data2.user_id}`).hide();
+                    $(`#new_priv_${data2.user_id}`).hide();
+                    $(`#user_name_${data2.user_id}`).val('');
+                    {#console.log(data2.id);#}
+                    {#$(`#removeFav_${data2.id}`).css('display', 'none');#}
+                    {#$(`#addFav_${data2.id}`).css('display', 'block');#}
+                }
+            });
+        }
+
+
+        function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
+{% endblock %}

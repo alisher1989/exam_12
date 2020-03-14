@@ -1,0 +1,46 @@
+{% extends 'base.html' %}]
+{% load staticfiles %}
+{% block menu %}
+{% endblock %}
+{% block content %}
+    <h1 class="mt-3">Files</h1>
+    {% include 'partial/simple_search.html' %}
+    <hr>
+        {% if is_paginated  %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+    <hr/>
+    <div class="row">
+        {% for file in files %}
+            <div class="card" style="width: 18rem; margin-left: 0.5rem; margin-top: 0.5rem;" >
+              <p class="card-text">Name: <a href="{% url 'webapp:file_detail_view' file.pk %}" >{{ file.name }}</a></p>
+
+                <p class="card-text"><a href="http://localhost:8000/uploads/{{ file.file }}" type="button" class="btn btn-info">Download File</a></p>
+
+              <div class="card-body">
+                  {% if file.author %}
+
+                  <p class="card-text">Author: <b><a href="{% url 'accounts:user_detail' file.author.pk %}">{{ file.author }}</a></b></p>
+                      {% else %}
+                  <p>Anonymous</p>
+                  {% endif %}
+                  <p class="card-text">
+                  </p>
+                  <p class="card-text">
+
+{#                      {% if item.is_fav %}#}
+{#                            <div class="wrapper"><a href="#" style="display: none" id="addFav_{{ item.pk }}" type="button" class="btn btn-dark" onclick="addToFav(event, {{ item.pk }})">В избранное </a></div>#}
+{#                            <div class="wrapper"><a href="#" id="removeFav_{{ item.pk }}" type="button" class="btn btn-dark" onclick="DeleteFromFav(event, {{ item.pk }})">Удалить из избранного</a></div>#}
+{#                        {% else %}#}
+{#                            <div class="wrapper"><a href="#" id="addFav_{{ item.pk }}" type="button" class="btn btn-dark" onclick="addToFav(event, {{ item.pk }})">В избранное</a></div>#}
+{#                            <div class="wrapper"><a href="#" style="display: none" id="removeFav_{{ item.pk }}" type="button" class="btn btn-dark" onclick="DeleteFromFav(event, {{ item.pk }})">Удалить из избранного</a></div>#}
+{#                        {% endif %}#}
+                  </p>
+              </div>
+            </div>
+        {% endfor %}
+    </div>
+          {% if is_paginated  %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+{% endblock %}
