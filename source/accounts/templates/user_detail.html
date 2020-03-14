@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{ user_obj.username }}
+{% endblock %}
+
+{% block menu %}
+    {% if user_obj == request.user %}
+    <li><a href="{% url 'accounts:user_update' user_obj.pk %}">Edit</a></li>
+    <li><a href="{% url 'accounts:user_change_password' user_obj.pk %}">Change password</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>Profile</h1>
+    {% if user_obj.profile.avatar %}
+        <img class="avatar" src="{{ user_obj.profile.avatar.url }}"
+             width="250" height="250" alt="user picture">
+    {% endif %}
+    <p>Username: <b>{{ user_obj.username }}</b></p>
+    <p>First name: <b>{{ user_obj.first_name }}</b></p>
+    <p>Last name: <b>{{ user_obj.last_name }}</b></p>
+    <p>Email: <b>{{ user_obj.email }}</b></p>
+    <p>About user: <b>{{ user_obj.profile.about_user }}</b></p>
+    <p>Number: <b>{{ user_obj.profile.number}}</b></p>
+
+    <br>
+    <h3>My Advertisement</h3>
+    <div class="row">
+        {% for item in user_obj.advertisement_set.all %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3" id="test_1{{ item.pk }}">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{% url 'webapp:adver_detail_view' item.pk %}"><h2 class="card-text card-link">
+                            {{ item.description }}
+                        </h2></a>
+                        <p class="card-text">{{ item.author }}</p>
+                        <p class="card-text text-right"><b>Description: </b>{{ item.description }}</p>
+                        <p>{{ item.created_at }}</p>
+                        <a href="{% url 'webapp:update_adver' item.pk %}">Update</a>
+                        <a href="{% url 'webapp:delete_adver' item.pk %}">Delete</a>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <br>
+    <h3>My Favorites</h3>
+
+    <div class="row">
+        {% for item in user_obj.favorites_set.all %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3" id="test_{{ item.adme_id.pk }}">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{% url 'webapp:adver_detail_view' item.adme_id.pk %}"><h2 class="card-text card-link">
+                            {{ item.adme_id.description }}
+                        </h2></a>
+                        <p class="card-text">{{ item.adme_id.author }}</p>
+                        <p class="card-text text-right"><b>Description: </b>{{ item.adme_id.description }}</p>
+                        <p>{{ item.adme_id.created_at }}</p>
+                        <a href="{% url 'webapp:update_adver' item.adme_id.pk %}">Update</a>
+                        <a href="{% url 'webapp:delete_adver' item.adme_id.pk %}">Delete</a>
+                        {% if item.is_fav %}
+                            <div class="wrapper"><a href="#"  id="addFav_{{ item.adme_id.pk }}" onclick="addToFav(event, {{ item.adme_id.pk }})">В избранное </a></div>
+                            <div class="wrapper"><a href="#" style="display: none" id="removeFav_{{ item.adme_id.pk }}" onclick="DeleteFromFav(event, {{ item.adme_id.pk }})">Удалить из избранного</a></div>
+                        {% else %}
+                            <div class="wrapper"><a href="#" style="display: none" id="addFav_{{ item.adme_id.pk }}" onclick="addToFav(event, {{ item.adme_id.pk }})">В избранное</a></div>
+                            <div class="wrapper"><a href="#" id="removeFav_{{ item.adme_id.pk }}" onclick="DeleteFromFav(event, {{ item.adme_id.pk }})">Удалить из избранного</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="application/javascript">
+        function addToFav(event, pk) {
+            event.preventDefault();
+            console.log('start', pk);
+            let csrftoken = getCookie('csrftoken');
+            let data = {
+                adver_id: pk
+            };
+            $.ajax({
+                url: '/add-to-fav/',
+                type: 'post',
+                data: data,
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function (data2) {
+                    console.log('ok');
+                    console.log(data2.id);
+                    $(`#removeFav_${data2.id}`).css('display', 'block');
+                    $(`#addFav_${data2.id}`).css('display', 'none');
+                }
+            });
+        }
+
+        function DeleteFromFav(event, pk) {
+            event.preventDefault();
+            console.log('start', pk);
+            let csrftoken = getCookie('csrftoken');
+            let data = {
+                adver_id: pk
+            };
+            $.ajax({
+                url: '/delete-from-fav/',
+                type: 'post',
+                data: data,
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function (data2) {
+                    console.log('ok');
+                    console.log(data2.id);
+                    $(`#removeFav_${data2.id}`).css('display', 'none');
+                    $(`#addFav_${data2.id}`).css('display', 'block');
+                    $(`#test_${data2.id}`).hide();
+                }
+            });
+        }
+
+
+
+
+        function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
+{% endblock %}
+
