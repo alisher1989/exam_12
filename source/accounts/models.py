@@ -16,7 +16,6 @@ class Profile(models.Model):
     avatar = models.ImageField(null=True, blank=True, upload_to='user_pics', verbose_name='Аватар')
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE, verbose_name='Пользователь')
     about_user = models.TextField(null=True, blank=True, verbose_name='О себе')
-    number = models.CharField(max_length=50, null=False, blank=False)
 
     def __str__(self):
         return self.user.get_full_name() + "'s Profile"
