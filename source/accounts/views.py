@@ -10,6 +10,7 @@ from django.views.generic import UpdateView, DetailView, ListView
 
 from accounts.forms import SignUpForm, UserChangeForm, UserChangePasswordForm, UserPasswordResetForm
 from accounts.models import Token, Profile
+from webapp.models import File
 
 
 def send_token(user, subject, message, redirect_url):
@@ -92,6 +93,15 @@ class UserDetailView(DetailView):
     model = User
     template_name = 'user_detail.html'
     context_object_name = 'user_obj'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.get(id=self.kwargs['pk'])
+        if self.request.user == user:
+            context['files'] = File.objects.filter(author=user)
+        else:
+            context['files'] = File.objects.filter(author=user, file_status='common')
+        return context
 
 
 class UserChangeView(UserPassesTestMixin, UpdateView):

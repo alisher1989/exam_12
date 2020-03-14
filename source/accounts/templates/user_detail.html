@@ -24,20 +24,20 @@
     <p>Number: <b>{{ user_obj.profile.number}}</b></p>
 
     <br>
-    <h3>My Advertisement</h3>
+    <h3>My Files</h3>
     <div class="row">
-        {% for item in user_obj.advertisement_set.all %}
+        {% for item in files %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3" id="test_1{{ item.pk }}">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{% url 'webapp:adver_detail_view' item.pk %}"><h2 class="card-text card-link">
-                            {{ item.description }}
+                        <a href="{% url 'webapp:file_detail_view' item.pk %}"><h2 class="card-text card-link">
+                            {{ item.name }}
                         </h2></a>
+                        <p><a href="http://localhost:8000/uploads/{{ item.file }}" type="button" class="btn btn-info">Download file</a></p>
                         <p class="card-text">{{ item.author }}</p>
-                        <p class="card-text text-right"><b>Description: </b>{{ item.description }}</p>
-                        <p>{{ item.created_at }}</p>
-                        <a href="{% url 'webapp:update_adver' item.pk %}">Update</a>
-                        <a href="{% url 'webapp:delete_adver' item.pk %}">Delete</a>
+                        <p>Created at: {{ item.created_at }}</p>
+                        <a href="{% url 'webapp:update_file' item.pk %}" type="button" class="btn btn-info">Update</a>
+                        <a href="{% url 'webapp:delete_file' item.pk %}" type="button" class="btn btn-info">Delete</a>
 
                     </div>
                 </div>
@@ -101,7 +101,7 @@
             });
         }
 
-        function DeleteFromFav(event, pk) {
+        function DeleteFromPrivate(event, pk) {
             event.preventDefault();
             console.log('start', pk);
             let csrftoken = getCookie('csrftoken');
