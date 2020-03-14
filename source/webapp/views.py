@@ -18,7 +18,7 @@ class IndexView(ListView):
     template_name = 'index.html'
     context_object_name = 'files'
     ordering = '-created_at'
-    paginate_by = 2
+    paginate_by = 10
     paginate_orphans = 1
 
     def get(self, request, *args, **kwargs):
@@ -31,17 +31,11 @@ class IndexView(ListView):
         context['form'] = self.form
         if self.search_value:
             context['query'] = urlencode({'search': self.search_value})
-        # context['files'] = self.get_common_files()
         return context
-
-    # def get_common_files(self):
-    #     queryset = super().get_queryset().filter(file_status='common')
-    #     return queryset
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = File.objects.filter(file_status='common')
-        # queryset = File.objects.filter()
+        queryset = File.objects.filter(file_status='common').order_by('-created_at')
         if self.search_value:
             query = Q(name__icontains=self.search_value)
             queryset = queryset.filter(query)
@@ -92,10 +86,10 @@ class FileUpdateView(PermissionRequiredMixin, UpdateView):
     context_object_name = 'file'
     permission_required = 'webapp.change_file'
 
-    # def test_func(self):
-    #     file = File.objects.get(id=self.kwargs['pk'])
-    #     if (file.created_by == self.request.user) or (self.request.user.has_perm('webapp.change_file')):
-    #         return self.request.user
+    def test_func(self):
+        file = File.objects.get(id=self.kwargs['pk'])
+        if (file.created_by == self.request.user) or (self.request.user.has_perm('webapp.change_file')):
+            return self.request.user
 
     def get_success_url(self):
         return reverse('webapp:file_detail_view', kwargs={'pk': self.object.pk})
@@ -106,6 +100,7 @@ class FileDeleteView(PermissionRequiredMixin, DeleteView):
     pk_kwargs_url = 'pk'
     template_name = 'delete.html'
     context_object_name = 'file'
+    permission_required = 'webapp.delete_file'
 
     def test_func(self):
         file = File.objects.get(id=self.kwargs['pk'])
