@@ -41,7 +41,7 @@ class IndexView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = File.objects.filter(file_status='common')
-        queryset = File.objects.filter()
+        # queryset = File.objects.filter()
         if self.search_value:
             query = Q(name__icontains=self.search_value)
             queryset = queryset.filter(query)
@@ -90,11 +90,12 @@ class FileUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'update.html'
     form_class = FileForm
     context_object_name = 'file'
+    permission_required = 'webapp.change_file'
 
-    def test_func(self):
-        file = File.objects.get(id=self.kwargs['pk'])
-        if (file.created_by == self.request.user) or (self.request.user.has_perm('webapp.delete_file')):
-            return self.request.user
+    # def test_func(self):
+    #     file = File.objects.get(id=self.kwargs['pk'])
+    #     if (file.created_by == self.request.user) or (self.request.user.has_perm('webapp.change_file')):
+    #         return self.request.user
 
     def get_success_url(self):
         return reverse('webapp:file_detail_view', kwargs={'pk': self.object.pk})
